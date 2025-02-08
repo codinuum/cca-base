@@ -1,0 +1,3 @@
+[submodule "diffast"]
+	path = diffast
+	url = https://github.com/codinuum/diffast
