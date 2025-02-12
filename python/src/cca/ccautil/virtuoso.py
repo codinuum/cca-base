@@ -88,11 +88,11 @@ class ODBCDriver(object):
         self._pypyodbc_flag = False
         try:
             import pyodbc
-            self._db = pyodbc.connect(connect_string,
+            self._db = pyodbc.connect(connect_string+';wideAsUTF16=Y',
                                       ansi=True, autocommit=True)
             self._db.setdecoding(pyodbc.SQL_CHAR, encoding='utf-8')
             self._db.setdecoding(pyodbc.SQL_WCHAR, encoding='utf-8')
-            self._db.setdecoding(pyodbc.SQL_WMETADATA, encoding='utf-32le')
+            self._db.setdecoding(pyodbc.SQL_WMETADATA, encoding='utf-16le')
             self._db.setencoding(encoding='utf-8')
         except Exception as e:
             logger.warning(str(e))
@@ -100,7 +100,7 @@ class ODBCDriver(object):
             # from . import pypyodbc as pyodbc
             import pypyodbc as pyodbc
             pyodbc.lowercase = False
-            self._db = pyodbc.connect((connect_string+';wideAsUTF16=1'),
+            self._db = pyodbc.connect((connect_string+';wideAsUTF16=Y'),
                                       ansi=False, autocommit=True)
             self._pypyodbc_flag = True
 
