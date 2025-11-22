@@ -3,7 +3,7 @@
 '''
   A Diff/TS Driver
 
-  Copyright 2012-2024 Codinuum Software Lab <https://codinuum.com>
+  Copyright 2012-2025 Codinuum Software Lab <https://codinuum.com>
 
   Licensed under the Apache License, Version 2.0 (the "License");
   you may not use this file except in compliance with the License.
@@ -88,8 +88,8 @@ diffast_preprune = True
 diffast_prematch = True
 diffast_usecache = True
 
-diffast_cmd = 'diffast.opt'
-patchast_cmd = 'patchast.opt'
+diffast_cmd = 'diffast.exe'
+patchast_cmd = 'patchast.exe'
 
 
 diffts_cost_pat = re.compile(r'total changes\s*: ([0-9]+)')
