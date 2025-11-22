@@ -88,8 +88,8 @@ diffast_preprune = True
 diffast_prematch = True
 diffast_usecache = True
 
-diffast_cmd = 'diffast.exe'
-patchast_cmd = 'patchast.exe'
+diffast_cmd = 'diffast_.exe'
+patchast_cmd = 'patchast_.exe'
 
 
 diffts_cost_pat = re.compile(r'total changes\s*: ([0-9]+)')
@@ -111,7 +111,7 @@ diffts_nsrcfiles_pat = re.compile(r'source files\s*: ([0-9]+)')
 diffts_LOC_pat = re.compile(r'LOC\s*: ([0-9]+)')
 diffts_missed_LOC_pat = re.compile(r'missed LOC\s*: ([0-9]+)')
 
-stat_file_name = 'stat'
+stat_file_name = 'stat.json'
 info_file_name = 'info'
 
 
@@ -321,6 +321,49 @@ def read_file(r, name_pat_list, stat_paths, retry_count=RETRY_COUNT):
             continue
 
 
+def read_stat(stat_path, retry_count=RETRY_COUNT):
+    r = {'cost': 0,
+         'nmappings': 0,
+         'ninserts': 0,
+         'ndeletes': 0,
+         'nrelabels': 0,
+         'nmoves': 0,
+         'nmovrels': 0,
+         'nnodes1': 0,
+         'nnodes2': 0,
+         }
+    count = 0
+    result = None
+    while count <= retry_count:
+        try:
+            with open(stat_path['path']) as f:
+                stat = json.load(f)
+                r['cost'] = stat['edit_cost']
+                r['nmappings'] = stat['nmappings']
+                r['ninserts'] = stat['inserts']
+                r['ndeletes'] = stat['deletes']
+                r['nrelabels'] = stat['relabels']
+                r['nmoves'] = stat['moves']
+                r['nmovrels'] = stat['move+relabels']
+                r['nnodes1'] = stat['nnodes1']
+                r['nnodes2'] = stat['nnodes2']
+                result = r
+                break
+
+        except IOError as e:
+            logger.warning(f'{e}')
+            count += 1
+            if count <= retry_count:
+                logger.warning(f'retrying ({count})...')
+                time.sleep(2**count)
+
+        except Exception as e:
+            logger.warning(f'! {e}: stat_path={stat_path}')
+            break
+
+    return result
+
+
 def read_file_info_file(stat_paths, retry_count=RETRY_COUNT):
     r = {'nnodes': 0,
          'loc': 0,
@@ -428,7 +471,7 @@ def diffts(diff_cmd, file1, file2,
            no_unnamed_node_moves=False,
            no_rename_rectification=False,
            no_binding_trace=False,
-           strict_rr=False,
+           rrlv=2,
            no_implicit_name_resolution=False,
            keep_filtered_temp=False,
            local_cache_name='',
@@ -545,8 +588,8 @@ def diffts(diff_cmd, file1, file2,
         if no_binding_trace:
             other_opts += ' -no-binding-trace'
 
-        if strict_rr:
-            other_opts += ' -strict-rr'
+        if rrlv is not None:
+            other_opts += f' -rrlv {rrlv}'
 
         if no_implicit_name_resolution:
             other_opts += ' -parser:no-implicit-name-resolution'
@@ -596,9 +639,9 @@ def diffts(diff_cmd, file1, file2,
     if dironly:
         return r
 
-    stat_paths = [mksearchresult(cache_dir, stat_file_name)]
+    stat_path = mksearchresult(cache_dir, stat_file_name)
 
-    r = read_file_diff_stat_file(stat_paths, RETRY_COUNT)
+    r = read_stat(stat_path)
 
     return r
 
