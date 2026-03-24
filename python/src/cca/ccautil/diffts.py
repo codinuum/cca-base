@@ -210,7 +210,7 @@ def _get_cache_dir(a1, a2,
 def get_cache_dir1_(diff_cmd, a,
                     cache_dir_base=None,
                     local_cache_name=None,
-                    quiet=False,
+                    quiet=True,
                     algo=HashAlgo.MD5
                     ):
 
@@ -242,7 +242,7 @@ def get_cache_dir1_(diff_cmd, a,
 def get_cache_dir(diff_cmd, a1, a2,
                   cache_dir_base=None,
                   local_cache_name=None,
-                  quiet=False,
+                  quiet=True,
                   algo=HashAlgo.MD5
                   ):
 
@@ -331,6 +331,7 @@ def read_stat(stat_path, retry_count=RETRY_COUNT):
          'nmovrels': 0,
          'nnodes1': 0,
          'nnodes2': 0,
+         'nhunks': 0,
          }
     count = 0
     result = None
@@ -347,6 +348,7 @@ def read_stat(stat_path, retry_count=RETRY_COUNT):
                 r['nmovrels'] = stat['move+relabels']
                 r['nnodes1'] = stat['nnodes1']
                 r['nnodes2'] = stat['nnodes2']
+                r['nhunks'] = stat['nhunks']
                 result = r
                 break
 
@@ -469,7 +471,8 @@ def diffts(diff_cmd, file1, file2,
            aggressive=False,
            ignore_moves_of_unordered=False,
            no_unnamed_node_moves=False,
-           no_rename_rectification=False,
+           rely_on_naming_convention=False,
+           partial_name_resolution=False,
            no_binding_trace=False,
            rrlv=2,
            no_implicit_name_resolution=False,
@@ -477,9 +480,10 @@ def diffts(diff_cmd, file1, file2,
            local_cache_name='',
            dump_delta=False,
            minimize_delta=False,
+           minimize_delta_more=False,
            fact_for_delta=False,
            keep_going=False,
-           quiet=False):
+           quiet=True):
 
     logger.info(f'comparing "{file1}" with "{file2}"')
 
@@ -582,8 +586,11 @@ def diffts(diff_cmd, file1, file2,
         if no_unnamed_node_moves:
             other_opts += ' -no-unnamed-node-moves'
 
-        if no_rename_rectification:
-            other_opts += ' -norr'
+        if rely_on_naming_convention:
+            other_opts += ' -parser:rely-on-naming-convention'
+
+        if partial_name_resolution:
+            other_opts += ' -parser:partial-name-resolution'
 
         if no_binding_trace:
             other_opts += ' -no-binding-trace'
@@ -611,7 +618,10 @@ def diffts(diff_cmd, file1, file2,
         if dump_delta:
             other_opts += ' -dump:delta'
 
-        if minimize_delta:
+        if minimize_delta_more:
+            other_opts += ' -dump:delta:minimize:more'
+
+        elif minimize_delta:
             other_opts += ' -dump:delta:minimize'
 
         cmd = ''.join((diff_cmd, mode_opts,
@@ -682,7 +692,7 @@ def diffast_get_gdiff(file1, file2, **options):
     return d
 
 
-def dump_unparsed(path, to_path, quiet=False):
+def dump_unparsed(path, to_path, quiet=True):
     cmd = f'{diffast_cmd} -clearcache -parseonly -dump:src:out "{to_path}" "{path}"'
     if not quiet:
         logger.info('cmd="{}"'.format(cmd))
@@ -690,7 +700,7 @@ def dump_unparsed(path, to_path, quiet=False):
     return proc.system(cmd, quiet=quiet)
 
 
-def patchast(path, delta_path, out_path, quiet=False):
+def patchast(path, delta_path, out_path, quiet=True):
     cmd = f'{patchast_cmd} -o "{out_path}" "{path}" "{delta_path}"'
     if not quiet:
         logger.info(f'cmd="{cmd}"')

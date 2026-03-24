@@ -836,9 +836,9 @@
     
 
 
-    <!-- http://codinuum.com/ontologies/2012/10/java-entity#ArrayInitElementValue -->
+    <!-- http://codinuum.com/ontologies/2012/10/java-entity#ElementValueArrayInitializer -->
 
-    <owl:Class rdf:about="http://codinuum.com/ontologies/2012/10/java-entity#ArrayInitElementValue">
+    <owl:Class rdf:about="http://codinuum.com/ontologies/2012/10/java-entity#ElementValueArrayInitializer">
         <rdfs:subClassOf rdf:resource="http://codinuum.com/ontologies/2012/10/java-entity#ElementValue"/>
     </owl:Class>
     
@@ -2208,9 +2208,9 @@
     
 
 
-    <!-- http://codinuum.com/ontologies/2012/10/java-entity#ForHeader -->
+    <!-- http://codinuum.com/ontologies/2012/10/java-entity#ForHead -->
 
-    <owl:Class rdf:about="http://codinuum.com/ontologies/2012/10/java-entity#ForHeader">
+    <owl:Class rdf:about="http://codinuum.com/ontologies/2012/10/java-entity#ForHead">
         <rdfs:subClassOf rdf:resource="http://codinuum.com/ontologies/2012/10/java-entity#Entity"/>
     </owl:Class>
     
@@ -3062,6 +3062,22 @@
         <rdfs:subClassOf rdf:resource="http://codinuum.com/ontologies/2012/10/java-entity#InstanceCreationStatement"/>
     </owl:Class>
     
+
+
+    <!-- http://codinuum.com/ontologies/2012/10/java-entity#NaryAdd -->
+
+    <owl:Class rdf:about="http://codinuum.com/ontologies/2012/10/java-entity#NaryAdd">
+        <owl:equivalentClass>
+            <owl:Restriction>
+                <owl:onProperty rdf:resource="http://codinuum.com/ontologies/2012/10/source-code-entity#child0"/>
+                <owl:minQualifiedCardinality rdf:datatype="http://www.w3.org/2001/XMLSchema#nonNegativeInteger">2</owl:minQualifiedCardinality>
+                <owl:onClass rdf:resource="http://codinuum.com/ontologies/2012/10/java-entity#Expression"/>
+            </owl:Restriction>
+        </owl:equivalentClass>
+        <rdfs:subClassOf rdf:resource="http://codinuum.com/ontologies/2012/10/java-entity#Expression"/>
+        <rdfs:label rdf:datatype="http://www.w3.org/2000/01/rdf-schema#Literal">+</rdfs:label>
+    </owl:Class>
+
 
 
     <!-- http://codinuum.com/ontologies/2012/10/java-entity#Native -->

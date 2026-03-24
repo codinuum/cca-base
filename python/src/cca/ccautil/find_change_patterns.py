@@ -1174,7 +1174,7 @@ class Finder(object):
     def dump(self, outdir, foutdir=None, url_base_path='..'):
 
         if not os.path.exists(outdir):
-            logger.warning(f'creating "{outdir}"...')
+            logger.info(f'creating "{outdir}"...')
             os.makedirs(outdir)
 
         fact = Fact(PREFIX_TBL)
@@ -1182,7 +1182,7 @@ class Finder(object):
         html_dir = os.path.join(outdir, self._proj_id)
 
         if not os.path.exists(html_dir):
-            logger.warning(f'creating "{html_dir}"...')
+            logger.info(f'creating "{html_dir}"...')
             os.makedirs(html_dir)
 
         html_path = os.path.join(html_dir, 'index.html')

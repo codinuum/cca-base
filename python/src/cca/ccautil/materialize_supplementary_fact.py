@@ -22,6 +22,7 @@ JAVA_ITER_QUERIES = [
     'type_of_this.rq',
     'type_of_uop.rq',
     'type_of_bop.rq',
+    'type_of_naryop.rq',
     'type_of_array_access.rq',
     'type_of_ivk.rq',
     'type_of_new.rq',

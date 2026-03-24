@@ -321,7 +321,7 @@ class Graph(object):
         logger.info('writing to "%s"...' % path)
         d = os.path.dirname(path)
         if d != '' and not os.path.exists(d):
-            logger.warning('No such directory: "%s"' % d)
+            logger.info('No such directory: "%s"' % d)
             logger.info('creating "%s"...' % d)
             os.makedirs(d)
         self._model.serialize(path, format=fmt, base=base_uri)

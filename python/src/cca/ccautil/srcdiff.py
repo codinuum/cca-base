@@ -568,8 +568,9 @@ def diff_dirs(diff, dir1, dir2, usecache=True, cache_dir_base=None, use_result_c
               check=False,
               aggressive=False,
               ignore_moves_of_unordered=False,
+              rely_on_naming_convention=False,
+              partial_name_resolution=False,
               no_unnamed_node_moves=False,
-              no_rename_rectification=False,
               no_binding_trace=False,
               rrlv=2,
               no_implicit_name_resolution=False,
@@ -577,11 +578,12 @@ def diff_dirs(diff, dir1, dir2, usecache=True, cache_dir_base=None, use_result_c
               local_cache_name=None,
               dump_delta=False,
               minimize_delta=False,
+              minimize_delta_more=False,
               fact_for_delta=False,
               keep_going=False,
               use_sim=False,
               sim_thresh=0.7,
-              quiet=False,
+              quiet=True,
               no_node_count=False,
               count_nodes=count_nodes,
               **extra_kwargs
@@ -610,6 +612,7 @@ def diff_dirs(diff, dir1, dir2, usecache=True, cache_dir_base=None, use_result_c
     nrelabels = 0
     nmoves = 0
     nmovrels = 0
+    nhunks = 0
 
     line_sim_sum = 0.0
     line_sim_count = 0
@@ -933,15 +936,17 @@ def diff_dirs(diff, dir1, dir2, usecache=True, cache_dir_base=None, use_result_c
                      check=check,
                      aggressive=aggressive,
                      ignore_moves_of_unordered=ignore_moves_of_unordered,
+                     rely_on_naming_convention=rely_on_naming_convention,
+                     partial_name_resolution=partial_name_resolution,
                      no_unnamed_node_moves=no_unnamed_node_moves,
-                     no_rename_rectification=no_rename_rectification,
                      no_binding_trace=no_binding_trace,
                      rrlv=2,
-                     no_implicit_name_resolution=False,
+                     no_implicit_name_resolution=no_implicit_name_resolution,
                      keep_filtered_temp=keep_filtered_temp,
                      local_cache_name=local_cache_name,
                      dump_delta=dump_delta,
                      minimize_delta=minimize_delta,
+                     minimize_delta_more=minimize_delta_more,
                      fact_for_delta=fact_for_delta,
                      keep_going=keep_going,
                      quiet=quiet,
@@ -953,6 +958,7 @@ def diff_dirs(diff, dir1, dir2, usecache=True, cache_dir_base=None, use_result_c
             c = r['cost']
             m = r['nmappings']
 
+            logger.debug(f'r={r}')
             logger.info(f'"{file1}" - "{file2}": CMR={c}/{m} ({t0:.2f}s)')
 
             fvs0 = []
@@ -992,6 +998,7 @@ def diff_dirs(diff, dir1, dir2, usecache=True, cache_dir_base=None, use_result_c
             nrelabels += r['nrelabels']
             nmoves += r['nmoves']
             nmovrels += r['nmovrels']
+            nhunks += r['nhunks']
 
     except Exception as e:
         logger.warning(f'{e}')
@@ -1013,6 +1020,7 @@ def diff_dirs(diff, dir1, dir2, usecache=True, cache_dir_base=None, use_result_c
            'nrelabels': nrelabels,
            'nmoves': nmoves,
            'nmovrels': nmovrels,
+           'nhunks': nhunks,
 
            'modified': modified,
            'renamed': renamed,
