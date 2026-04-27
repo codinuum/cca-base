@@ -51,8 +51,8 @@ RUN set -x && \
     echo '[[ -d $PYENV_ROOT/bin ]] && export PATH="$PYENV_ROOT/bin:$PATH"' >> ~/.bashrc && \
     echo 'eval "$(pyenv init - bash)"' >> ~/.bashrc && \
     eval "$(pyenv init - bash)" && \
-    pyenv install 3.14.3 && \
-    pyenv global 3.14.3 && \
+    pyenv install 3.14.4 && \
+    pyenv global 3.14.4 && \
     pip install --upgrade pip && \
     pip install pygit2 pyodbc setuptools python-rapidjson svn daemon build javalang
 
@@ -62,7 +62,7 @@ RUN set -x && \
     eval "$(pyenv init - bash)" && \
     cd /root/python && \
     python3 -m build && \
-    pip install dist/cca-*.tar.gz --break-system-packages && \
+    pip install dist/cca-*.tar.gz && \
     cd /root && \
     rm -r python
 
